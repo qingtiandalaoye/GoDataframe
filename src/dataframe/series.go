@@ -13,14 +13,13 @@ const Bool_type = "bool"
 const Time_type = "time"
 
 type Series struct {
-	Name	string         // The name of the series
-	t	string         // The type of the series
-	Index []elementValue		// an Elements used as index
+	Name   string         // The name of the series
+	t      string         // The type of the series
+	Index  []elementValue // an Elements used as index
 	values []elementValue
 }
 
-
-type SeriesInterface interface{
+type SeriesInterface interface {
 	Strings([]string) Series
 	Ints([]int) Series
 	Floats([]float64) Series
@@ -42,12 +41,53 @@ type SeriesInterface interface{
 
 	sort_index() SeriesInterface
 	shift(int) SeriesInterface
-	indexOf(int)  map[string]elementValue	//get a row of dataframe, -1 is the last row
-	loc(elementValue) map[string]elementValue	//get a row of dataframe, elementValue is the index value
+	indexOf(int) elementValue      //get a row of Series, -1 is the last row
+	loc(elementValue) elementValue //get a row of Series, elementValue is the index value
 }
 
 func setIndex(s *Series, index *[]elementValue) *Series {
 	s.Index = *index
+	return s
+}
+
+func (s *Series) loc(val elementValue) elementValue {
+	if len(s.Index) == 0 {
+		var empty string = ""
+		return stringElement{&empty}
+	}
+	for i := 0; i < len(s.Index); i++ {
+		s1, _ := ToString(val)
+		s2, _ := ToString(s.Index[i])
+		if strings.EqualFold(*s1.s, *s2.s) {
+			return s.values[i]
+		}
+	}
+	var empty string = ""
+	return stringElement{&empty}
+}
+
+func (s *Series) indexOf(idx int) elementValue {
+	if len(s.Index) <= idx {
+		var empty string = ""
+		return stringElement{&empty}
+	}
+	return s.values[idx]
+}
+
+func (s *Series) shift(idx int) *Series {
+	//s.values[0] = nil
+	s.values = s.values[1:len(s.values)]
+	return s
+}
+
+func (s *Series) sort_index() *Series {
+	//for i := 0; i < len(s.Index); i++ {
+	//	s1, _ := ToString(val)
+	//	s2, _ := ToString(s.Index[i])
+	//	if s1.Eq(s2) {
+	//		return s.values[i]
+	//	}
+	//}
 	return s
 }
 
@@ -60,9 +100,9 @@ func Strings(args []string) Series {
 	//could not use the  "for i, v := range args"  here
 	//the v will change to the latest address
 	ret := Series{
-		Name:	"",
-		values:	valuesArr,
-		t:	String_type,
+		Name:   "",
+		values: valuesArr,
+		t:      String_type,
 	}
 	return ret
 }
@@ -73,9 +113,9 @@ func Ints(args []int) Series {
 		valuesArr[i] = intElement{&(args[i])}
 	}
 	ret := Series{
-		Name:	"",
-		values:	valuesArr,
-		t:	Int_type,
+		Name:   "",
+		values: valuesArr,
+		t:      Int_type,
 	}
 	return ret
 }
@@ -86,9 +126,9 @@ func Floats(args []float64) Series {
 		valuesArr[i] = floatElement{&args[i]}
 	}
 	ret := Series{
-		Name:	"",
-		values:	valuesArr,
-		t:	Float_type,
+		Name:   "",
+		values: valuesArr,
+		t:      Float_type,
 	}
 	return ret
 }
@@ -99,9 +139,9 @@ func Bools(args []bool) Series {
 		valuesArr[i] = boolElement{&args[i]}
 	}
 	ret := Series{
-		Name:	"",
-		values:	valuesArr,
-		t:	Bool_type,
+		Name:   "",
+		values: valuesArr,
+		t:      Bool_type,
 	}
 	return ret
 }
@@ -109,16 +149,15 @@ func Bools(args []bool) Series {
 func Times(datetimeFormat string, args []string) Series {
 	var valuesArr []elementValue = make([]elementValue, len(args))
 	for i := 0; i < len(args); i++ {
-		valuesArr[i] = createTimeElement(datetimeFormat,  &args[i] )
+		valuesArr[i] = createTimeElement(datetimeFormat, &args[i])
 	}
 	ret := Series{
-		Name:	"",
-		values:	valuesArr,
-		t:	Time_type,
+		Name:   "",
+		values: valuesArr,
+		t:      Time_type,
 	}
 	return ret
 }
-
 
 // NamedStrings is a constructor for a named String series
 func NamedStrings(name string, args []string) Series {
@@ -196,14 +235,14 @@ func String(s Series) string {
 			//fmt.Printf("%v\n",v)
 			//fmt.Printf("---------A--2\n")
 			var aRow string
-			if len(s.Index) >= i + 1 {
+			if len(s.Index) >= i+1 {
 				//has index title of this "i"
 				idxStr, _ := ToString(s.Index[i])
 				vStr, _ := ToString(v)
-				aRow +=  AddLeftPadding(*idxStr.s, maxIndexChars + 1) + AddLeftPadding(*vStr.s, maxValueChars + 1)
+				aRow += AddLeftPadding(*idxStr.s, maxIndexChars+1) + AddLeftPadding(*vStr.s, maxValueChars+1)
 			} else {
 				vStr, _ := ToString(v)
-				aRow +=  AddLeftPadding("", maxIndexChars + 1) + AddLeftPadding(*vStr.s, maxValueChars + 1)
+				aRow += AddLeftPadding("", maxIndexChars+1) + AddLeftPadding(*vStr.s, maxValueChars+1)
 			}
 			ret = append(ret, aRow)
 		}
