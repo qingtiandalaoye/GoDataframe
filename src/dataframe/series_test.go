@@ -97,12 +97,6 @@ func TestSet_Index_shift(t *testing.T) {
 	}
 }
 
-//TODO
-
-//sort_index() SeriesInterface
-
-//indexOf(int)  elementValue	//get a row of dataframe, -1 is the last row
-//loc(elementValue) elementValue
 
 func TestSet_IndexOf_series(t *testing.T) {
 	var se Series = NamedStrings("nameABC", []string{"A", "B", "", "1", "2", "true", "false", "123456.01", "78.9", "2016-01-01", "2016-12-31"})
@@ -130,6 +124,30 @@ func TestSet_IndexOf_series(t *testing.T) {
 	}
 
 
+	st := "123456.01"
+	xy, _ = ToString(se.loc(stringElement{&st}))
 
+	fmt.Printf("loc of Series is: %s\n",xy)
+	if !strings.EqualFold(*xy.s, "123456.01") {
+		t.Error("not match")
+		t.Fail()
+	}
+
+}
+
+func TestSet_order_series(t *testing.T) {
+	var se Series = NamedStrings("nameABC", []string{"A", "B", "C", "DE", "fg", "1", "2", "34", "56", "35", "BB"})
+	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+
+	val := Values(se)
+	myse := setIndex(&se, &val)
+	se = *myse
+
+	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+
+	sasc := se.Sort_indexASC()
+	fmt.Printf("%s  string of Series is: %s\n", *sasc, String(*sasc))
+	sdesc := se.Sort_indexDESC()
+	fmt.Printf("%s  string of Series is: %s\n", *sdesc, String(*sdesc))
 
 }

@@ -39,7 +39,8 @@ type SeriesInterface interface {
 
 	setIndex(*Series, *[]elementValue) Series
 
-	sort_index() SeriesInterface
+	sort_indexASC() *Series
+	sort_indexDESC() *Series
 	shift(int) SeriesInterface
 	indexOf(int) elementValue      //get a row of Series, -1 is the last row
 	loc(elementValue) elementValue //get a row of Series, elementValue is the index value
@@ -55,8 +56,8 @@ func (s *Series) loc(val elementValue) elementValue {
 		var empty string = ""
 		return stringElement{&empty}
 	}
+	s1, _ := ToString(val)
 	for i := 0; i < len(s.Index); i++ {
-		s1, _ := ToString(val)
 		s2, _ := ToString(s.Index[i])
 		if strings.EqualFold(*s1.s, *s2.s) {
 			return s.values[i]
@@ -67,6 +68,9 @@ func (s *Series) loc(val elementValue) elementValue {
 }
 
 func (s *Series) indexOf(idx int) elementValue {
+	if idx < 0 {
+		return s.values[len(s.Index) + idx ]
+	}
 	if len(s.Index) <= idx {
 		var empty string = ""
 		return stringElement{&empty}
@@ -80,16 +84,6 @@ func (s *Series) shift(idx int) *Series {
 	return s
 }
 
-func (s *Series) sort_index() *Series {
-	//for i := 0; i < len(s.Index); i++ {
-	//	s1, _ := ToString(val)
-	//	s2, _ := ToString(s.Index[i])
-	//	if s1.Eq(s2) {
-	//		return s.values[i]
-	//	}
-	//}
-	return s
-}
 
 // Strings is a constructor for a String series
 func Strings(args []string) Series {
@@ -258,4 +252,65 @@ func Len(s Series) int {
 // Type returns the type of a given series
 func (s Series) Type() string {
 	return s.t
+}
+
+func (s *Series) Sort_indexASC() *Series {
+	return s.sort_index(true)
+}
+
+func (s *Series) Sort_indexDESC() *Series {
+	return s.sort_index(false)
+}
+
+func (s *Series) sort_index(asc bool) *Series {
+	if len(s.Index) == 0 {
+		// do nothing
+		return s
+	}
+	for i := 0; i < len(s.Index); i++ {
+		for j := 0; j < len(s.Index) - 1; j++ {
+			jGreaterThanJPlus1 := false
+			switch s.t {
+			case Int_type:
+				s1 := s.Index[j].(intElement)
+				s2 := s.Index[j + 1].(intElement)
+				if s1.Greater(s2) {
+					jGreaterThanJPlus1 = true
+				}
+			case Float_type:
+				if s.Index[j].(floatElement).Greater(s.Index[j + 1].(floatElement)) {
+					jGreaterThanJPlus1 = true
+				}
+			case String_type:
+				if s.Index[j].(stringElement).Greater(s.Index[j + 1].(stringElement)) {
+					jGreaterThanJPlus1 = true
+				}
+			case Bool_type:
+				if s.Index[j].(boolElement).Greater(s.Index[j + 1].(boolElement)) {
+					jGreaterThanJPlus1 = true
+				}
+			case Time_type:
+				if s.Index[j].(timeElement).Greater(s.Index[j + 1].(timeElement)) {
+					jGreaterThanJPlus1 = true
+				}
+			default:
+			//do nothing
+			}
+			//s.Index[j] > s.Index[j + 1]
+			if asc {
+				if jGreaterThanJPlus1 {
+					tmp := s.Index[j + 1]
+					s.Index[j + 1] = s.Index[j]
+					s.Index[j] = tmp
+				}
+			} else {
+				if !jGreaterThanJPlus1 {
+					tmp := s.Index[j + 1]
+					s.Index[j + 1] = s.Index[j]
+					s.Index[j] = tmp
+				}
+			}
+		}
+	}
+	return s
 }
