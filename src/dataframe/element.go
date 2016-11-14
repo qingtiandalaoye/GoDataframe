@@ -49,7 +49,9 @@ type elementInterface interface {
 
 type elementValue interface{}
 
-const format_timeElement_style_default = "2006-01-02 15:04:05"
+//use go lang standard mode, this is hard code: src/pkg/time/format.go
+const format_timeElement_style_default = "2006-01-02"
+//const format_timeElement_style_default = "2006-01-02 15:04:05"
 
 func createTimeElement(datetimeFormat string, s *string) timeElement {
 	if len(datetimeFormat) == 0 {

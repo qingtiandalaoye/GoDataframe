@@ -19,7 +19,7 @@ func TestCreate_series(t *testing.T) {
 	se = Bools([]bool{true, true, false})
 	fmt.Printf("%s\n", se)
 
-	se = Times("2006-01-01", []string{"2016-01-01", "2016-12-12", "2016-12-11"})
+	se = Times("2006-01-02", []string{"2016-01-02", "2016-12-12", "2016-12-11"})
 	fmt.Printf("%s\n", se)
 }
 
@@ -36,7 +36,7 @@ func TestCreate_named_series(t *testing.T) {
 	se = NamedBools("name1", []bool{true, true, false, true, true, false})
 	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
 
-	se = NamedTimes("name1", "2006-01-01", []string{"2016-01-01", "2016-12-12", "2016-12-12"})
+	se = NamedTimes("name1", "2006-01-02", []string{"2016-01-01", "2016-12-12", "2016-12-29"})
 	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
 }
 
@@ -65,7 +65,7 @@ func TestCreate_named_series_value(t *testing.T) {
 		fmt.Printf("%d, %s\n", i, v)
 	}
 
-	se = NamedTimes("name1", "2006-01-01", []string{"2016-01-01", "2016-12-12", "2016-12-11"})
+	se = NamedTimes("name1", "2006-01-02", []string{"2016-01-01", "2016-12-12", "2016-12-11"})
 	fmt.Printf("%s  type=%s  length=%d \n", se, se.Type(), Len(se))
 	for i, v := range Values(se) {
 		fmt.Printf("%d, %s\n", i, v)

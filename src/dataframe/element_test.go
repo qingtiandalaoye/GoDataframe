@@ -155,34 +155,34 @@ func TestToString_element(t *testing.T) {
 
 func TestTime_element(test *testing.T) {
 	//could not paser other format
-	aformat_timeElement_style1 := "2016-11-02 15:04:05"
-	//aformat_timeElement_style2 := "20160103190208"
-	//aformat_timeElement_style3 := "2016/01/03 19:02:08"
-	//aformat_timeElement_style4 := "2016/01/03"
-	//aformat_timeElement_style5 := "20160103"
+	aformat_timeElement_style1 := "2006-01-02 15:04:05"
+	aformat_timeElement_style2 := "20160103190208"
+	aformat_timeElement_style3 := "2016/01/03 19:02:08"
+	aformat_timeElement_style4 := "2016/01/03"
+	aformat_timeElement_style5 := "20160105"
 
 	var result timeElement
-	result = createTimeElement("",  &aformat_timeElement_style1)
+	result = createTimeElement("2006-01-02 15:04:05",  &aformat_timeElement_style1)
 	fmt.Printf("%s\n", result)
 
-	//aformat_timeElement_style1 ="2016-11-10 15:16:17"
-	//result = createTimeElement("2006-01-01 15:01:01",  &aformat_timeElement_style1)
-	//fmt.Printf("%s\n", result)
-	//
-	aformat_timeElement_style1 ="2016-12-12"
-	result = createTimeElement("2006-01-01",  &aformat_timeElement_style1)
+	aformat_timeElement_style1 ="2016-11-10 15:16:17"
+	result = createTimeElement("2006-01-02 15:04:05",  &aformat_timeElement_style1)
 	fmt.Printf("%s\n", result)
-	//result = createTimeElement( &aformat_timeElement_style2)
-	//fmt.Printf("%s\n", result)
-	//
-	//result = createTimeElement( &aformat_timeElement_style3)
-	//fmt.Printf("%s\n", result)
-	//
-	//result = createTimeElement( &aformat_timeElement_style4)
-	//fmt.Printf("%s\n", result)
-	//
-	//result = createTimeElement( &aformat_timeElement_style5)
-	//fmt.Printf("%s\n", result)
+
+	aformat_timeElement_style1 ="2016-12-12"
+	result = createTimeElement("2006-01-02",  &aformat_timeElement_style1)
+	fmt.Printf("%s\n", result)
+	result = createTimeElement("20060102150405", &aformat_timeElement_style2)
+	fmt.Printf("%s\n", result)
+
+	result = createTimeElement("2006/01/02 15:04:05", &aformat_timeElement_style3)
+	fmt.Printf("%s\n", result)
+
+	result = createTimeElement("2006/01/02", &aformat_timeElement_style4)
+	fmt.Printf("%s\n", result)
+
+	result = createTimeElement("20060102", &aformat_timeElement_style5)
+	fmt.Printf("%s\n", result)
 
 
 }
