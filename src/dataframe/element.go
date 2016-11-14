@@ -34,10 +34,10 @@ type boolElement struct {
 type elementInterface interface {
 
 	Eq(elementInterface) bool
-	//Less(elementInterface) bool
-	//LessEq(elementInterface) bool
+	Less(elementInterface) bool
+	LessEq(elementInterface) bool
 	Greater(elementInterface) bool
-	//GreaterEq(elementInterface) bool
+	GreaterEq(elementInterface) bool
 	ToString() stringElement
 	ToInt() intElement
 	ToFloat() floatElement
@@ -493,6 +493,16 @@ func (s boolElement) LessEq(elem elementInterface) bool {
 	}
 	return true
 }
+func (t timeElement) LessEq(elem elementInterface) bool {
+	if elem == nil {
+		return false
+	}
+	e := elem.ToTime()
+	if t.IsNA() || e.IsNA() {
+		return false
+	}
+	return (*t.t).Before(*e.t)
+}
 
 func (s stringElement) Less(elem elementInterface) bool {
 	if elem == nil {
@@ -540,6 +550,16 @@ func (s boolElement) Less(elem elementInterface) bool {
 	}
 	return false
 }
+func (t timeElement) Less(elem elementInterface) bool {
+	if elem == nil {
+		return false
+	}
+	e := elem.ToTime()
+	if t.IsNA() || e.IsNA() {
+		return false
+	}
+	return (*t.t).Before(*e.t)
+}
 
 func (s stringElement) GreaterEq(elem elementInterface) bool {
 	if elem == nil {
@@ -586,6 +606,16 @@ func (s boolElement) GreaterEq(elem elementInterface) bool {
 		return false
 	}
 	return true
+}
+func (t timeElement) GreaterEq(elem elementInterface) bool {
+	if elem == nil {
+		return false
+	}
+	e := elem.ToTime()
+	if t.IsNA() || e.IsNA() {
+		return false
+	}
+	return (*t.t).After(*e.t)
 }
 
 func (s stringElement) Greater(elem elementInterface) bool {
