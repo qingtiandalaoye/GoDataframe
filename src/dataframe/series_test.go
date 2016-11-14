@@ -3,6 +3,7 @@ package dataframe
 import (
 	"fmt"
 	"testing"
+	"strings"
 )
 
 func TestCreate_series(t *testing.T) {
@@ -94,11 +95,41 @@ func TestSet_Index_shift(t *testing.T) {
 	for i, v := range Values(se) {
 		fmt.Printf("%d, %s\n", i, v)
 	}
-
 }
+
 //TODO
 
 //sort_index() SeriesInterface
-//shift(int) SeriesInterface
-//indexOf(int)  map[string]elementValue	//get a row of dataframe, -1 is the last row
-//loc(elementValue) map[string]elementValue
+
+//indexOf(int)  elementValue	//get a row of dataframe, -1 is the last row
+//loc(elementValue) elementValue
+
+func TestSet_IndexOf_series(t *testing.T) {
+	var se Series = NamedStrings("nameABC", []string{"A", "B", "", "1", "2", "true", "false", "123456.01", "78.9", "2016-01-01", "2016-12-31"})
+	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+
+	val := Values(se)
+	myse := setIndex(&se, &val)
+	se = *myse
+
+	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+
+	x, _ := ToString(se.indexOf(0))
+	fmt.Printf("indexOf(0) of Series is: %s\n",x)
+	if !strings.EqualFold(*x.s, "A") {
+		t.Error("not match")
+		t.Fail()
+	}
+
+	xy, _ := ToString(se.indexOf(3))
+
+	fmt.Printf("indexOf(3) of Series is: %s\n",xy)
+	if !strings.EqualFold(*xy.s, "1") {
+		t.Error("not match")
+		t.Fail()
+	}
+
+
+
+
+}
