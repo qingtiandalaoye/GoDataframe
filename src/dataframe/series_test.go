@@ -79,8 +79,7 @@ func TestSet_Index_series(t *testing.T) {
 		fmt.Printf("%d, %s\n", i, v)
 	}
 	val := Values(se)
-	myse := setIndex(&se, &val)
-	se = *myse
+	se.setIndex(&val)
 
 	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
 }
@@ -102,8 +101,7 @@ func TestSet_IndexOf_series(t *testing.T) {
 	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
 
 	val := Values(se)
-	myse := setIndex(&se, &val)
-	se = *myse
+	se.setIndex(&val)
 
 	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
 
@@ -138,8 +136,7 @@ func TestSet_order_series(t *testing.T) {
 	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
 
 	val := Values(se)
-	myse := setIndex(&se, &val)
-	se = *myse
+	se.setIndex(&val)
 
 	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
 

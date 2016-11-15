@@ -62,9 +62,8 @@ func (s *Series) setValues(values *[]elementValue) {
 	s.RuneCount = RuneCount
 }
 
-func setIndex(s *Series, index *[]elementValue) *Series {
+func (s *Series) setIndex(index *[]elementValue) {
 	s.Index = *index
-	return s
 }
 
 func (s *Series) loc(val elementValue) elementValue {
@@ -254,10 +253,6 @@ func String(s Series) string {
 		}
 
 		for i, v := range s.values {
-			//fmt.Printf("--------A---1\n")
-			//fmt.Printf("%d\n",i)
-			//fmt.Printf("%v\n",v)
-			//fmt.Printf("---------A--2\n")
 			var aRow string
 			if len(s.Index) >= i+1 {
 				//has index title of this "i"
