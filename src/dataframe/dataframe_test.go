@@ -25,5 +25,6 @@ func TestRead_csv(t *testing.T) {
 		t.Errorf("read csv file error %v\n", err)
 		t.FailNow()
 	}
-	fmt.Printf("result %s", df)
+
+	fmt.Printf("result: %s", df)
 }
