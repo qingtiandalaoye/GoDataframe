@@ -2,6 +2,7 @@ package dataframe
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 )
@@ -13,10 +14,11 @@ const Bool_type = "bool"
 const Time_type = "time"
 
 type Series struct {
-	Name   string         // The name of the series
-	t      string         // The type of the series
-	Index  []elementValue // an Elements used as index
-	values []elementValue
+	Name      string         // The name of the series
+	t         string         // The type of the series
+	Index     []elementValue // an Elements used as index
+	values    []elementValue
+	RuneCount int
 }
 
 type SeriesInterface interface {
@@ -44,6 +46,20 @@ type SeriesInterface interface {
 	shift(int) SeriesInterface
 	indexOf(int) elementValue      //get a row of Series, -1 is the last row
 	loc(elementValue) elementValue //get a row of Series, elementValue is the index value
+}
+
+func (s *Series) setValues(values *[]elementValue) {
+	s.values = *values
+	var RuneCount int
+	for _, v := range *values {
+		if stringElement, error := ToString(v); error == nil {
+			count := utf8.RuneCountInString(*stringElement.s)
+			if count > RuneCount {
+				RuneCount = count
+			}
+		}
+	}
+	s.RuneCount = RuneCount
 }
 
 func setIndex(s *Series, index *[]elementValue) *Series {
@@ -87,67 +103,91 @@ func (s *Series) shift(idx int) *Series {
 // Strings is a constructor for a String series
 func Strings(args []string) Series {
 	var valuesArr []elementValue = make([]elementValue, len(args))
+	var RuneCount int
 	for i := 0; i < len(args); i++ {
 		valuesArr[i] = stringElement{&args[i]}
+		count := utf8.RuneCountInString(args[i])
+		if count > RuneCount {
+			RuneCount = count
+		}
 	}
 	//could not use the  "for i, v := range args"  here
 	//the v will change to the latest address
 	ret := Series{
-		Name:   "",
-		values: valuesArr,
-		t:      String_type,
+		Name:      "",
+		values:    valuesArr,
+		RuneCount: RuneCount,
+		t:         String_type,
 	}
 	return ret
 }
 
 func Ints(args []int) Series {
 	var valuesArr []elementValue = make([]elementValue, len(args))
+	var RuneCount int
 	for i := 0; i < len(args); i++ {
 		valuesArr[i] = intElement{&(args[i])}
+		strOfInt := strconv.Itoa(args[i])
+		count := utf8.RuneCountInString(strOfInt)
+		if count > RuneCount {
+			RuneCount = count
+		}
 	}
 	ret := Series{
-		Name:   "",
-		values: valuesArr,
-		t:      Int_type,
+		Name:      "",
+		values:    valuesArr,
+		RuneCount: RuneCount,
+		t:         Int_type,
 	}
 	return ret
 }
 
 func Floats(args []float64) Series {
 	var valuesArr []elementValue = make([]elementValue, len(args))
+	var RuneCount int
 	for i := 0; i < len(args); i++ {
 		valuesArr[i] = floatElement{&args[i]}
+		strOfInt := strconv.FormatFloat(float64(args[i]), 'f', 6, 64)
+		count := utf8.RuneCountInString(strOfInt)
+		if count > RuneCount {
+			RuneCount = count
+		}
 	}
 	ret := Series{
-		Name:   "",
-		values: valuesArr,
-		t:      Float_type,
+		Name:      "",
+		values:    valuesArr,
+		RuneCount: RuneCount,
+		t:         Float_type,
 	}
 	return ret
 }
 
 func Bools(args []bool) Series {
 	var valuesArr []elementValue = make([]elementValue, len(args))
+	var RuneCount int = 4
 	for i := 0; i < len(args); i++ {
 		valuesArr[i] = boolElement{&args[i]}
 	}
 	ret := Series{
-		Name:   "",
-		values: valuesArr,
-		t:      Bool_type,
+		Name:      "",
+		values:    valuesArr,
+		RuneCount: RuneCount,
+		t:         Bool_type,
 	}
 	return ret
 }
 
 func Times(datetimeFormat string, args []string) Series {
 	var valuesArr []elementValue = make([]elementValue, len(args))
+	var RuneCount int = len("1994-01-11 00:00:00 +0000 UTC")
 	for i := 0; i < len(args); i++ {
 		valuesArr[i] = createTimeElement(datetimeFormat, &args[i])
 	}
 	ret := Series{
-		Name:   "",
-		values: valuesArr,
-		t:      Time_type,
+		Name:      "",
+		values:    valuesArr,
+		RuneCount: RuneCount,
+		t:         Time_type,
 	}
 	return ret
 }
@@ -212,16 +252,7 @@ func String(s Series) string {
 				}
 			}
 		}
-		maxValueChars := 0
-		if len(s.values) > 0 {
-			for _, v := range s.values {
-				//elementValue
-				vStr, _ := ToString(v)
-				if vStr.Len() > maxValueChars {
-					maxValueChars = utf8.RuneCountInString(*vStr.s)
-				}
-			}
-		}
+
 		for i, v := range s.values {
 			//fmt.Printf("--------A---1\n")
 			//fmt.Printf("%d\n",i)
@@ -232,10 +263,10 @@ func String(s Series) string {
 				//has index title of this "i"
 				idxStr, _ := ToString(s.Index[i])
 				vStr, _ := ToString(v)
-				aRow += AddLeftPadding(*idxStr.s, maxIndexChars+1) + AddLeftPadding(*vStr.s, maxValueChars+1)
+				aRow += AddLeftPadding(*idxStr.s, maxIndexChars+1) + AddLeftPadding(*vStr.s, s.RuneCount+2) //hard code 2
 			} else {
 				vStr, _ := ToString(v)
-				aRow += AddLeftPadding("", maxIndexChars+1) + AddLeftPadding(*vStr.s, maxValueChars+1)
+				aRow += AddLeftPadding("", maxIndexChars+1) + AddLeftPadding(*vStr.s, s.RuneCount+2) //hard code 2
 			}
 			ret = append(ret, aRow)
 		}

@@ -1,11 +1,12 @@
 package dataframe
 
 import (
+	"bytes"
 	"encoding/csv"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -112,12 +113,8 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 	for i := 0; i < len(records); i++ {
 		//use the first line as column names
 		columnNames[i] = records[i][0]
+		//fmt.Printf("%s \n", records[i])
 
-		//fmt.Printf("len(row) =%d", len(row))
-		fmt.Printf("%s \n", records[i])
-
-		newSeries := Series{}
-		newSeries.Name = records[i][0]
 		var stringArr = make([]string, len(records[i])-paserFormat.skipfooter-paserFormat.skiprows)
 		stringArrIndex := 0
 
@@ -155,24 +152,24 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 			for i := 0; i < len(floatElementArr); i++ {
 				valuesArr[i] = floatElementArr[i]
 			}
-			seriesArr[i].values = valuesArr
+			seriesArr[i].setValues(&valuesArr)
 		}
 		if isIntType {
 			var valuesArr []elementValue = make([]elementValue, len(intElementArr))
 			for i := 0; i < len(intElementArr); i++ {
 				valuesArr[i] = intElementArr[i]
 			}
-			seriesArr[i].values = valuesArr
+			seriesArr[i].setValues(&valuesArr)
 		}
 		if isBoolType {
 			var valuesArr []elementValue = make([]elementValue, len(boolElementArr))
 			for i := 0; i < len(boolElementArr); i++ {
 				valuesArr[i] = boolElementArr[i]
 			}
-			seriesArr[i].values = valuesArr
+			seriesArr[i].setValues(&valuesArr)
 		}
 		if isStringType {
-			seriesArr[i].values = stringElementArr
+			seriesArr[i].setValues(&stringElementArr)
 		}
 
 	}
@@ -187,7 +184,7 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 	for i := 0; i < len(timeElementArr); i++ {
 		valuesArr[i] = timeElementArr[i]
 	}
-	seriesArr[paserFormat.parse_dates].values = valuesArr
+	seriesArr[paserFormat.parse_dates].setValues(&valuesArr)
 
 	resultDataFrame := DataFrame{}
 	resultDataFrame.columns = seriesArr
@@ -195,7 +192,36 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 	resultDataFrame.Index = Values(seriesArr[paserFormat.index_col])
 	resultDataFrame.ncols = len(seriesArr)
 	resultDataFrame.nrows = len(resultDataFrame.Index)
-	fmt.Printf("%s \t", resultDataFrame)
+	//fmt.Printf("%s \t", resultDataFrame)
 
 	return resultDataFrame, nil
+}
+
+func (df DataFrame) String() string {
+
+	var buf bytes.Buffer
+	buf.WriteString("Name:\t")
+	buf.WriteString(df.Name)
+	buf.WriteString("\n")
+	buf.WriteString("row * column : \t")
+	buf.WriteString(strconv.Itoa(df.nrows))
+	buf.WriteString(" * ")
+	buf.WriteString(strconv.Itoa(df.ncols))
+	buf.WriteString("\n")
+
+	for _, v := range df.ColumnNames {
+		buf.WriteString(v)
+		buf.WriteString("\t")
+	}
+	buf.WriteString("\n")
+	var seriesColumns []Series = df.columns
+	for i := 0; i < df.nrows; i++ {
+		for _, se := range seriesColumns {
+			strEle, _ := ToString(se.values[i])
+			buf.WriteString(AddLeftPadding(*strEle.s, se.RuneCount+2)) //hard code 2
+		}
+		buf.WriteString("\n")
+	}
+
+	return buf.String()
 }
