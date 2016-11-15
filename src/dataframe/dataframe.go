@@ -151,13 +151,25 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 		}
 
 		if isFloatType {
-			seriesArr[i].values = floatElementArr
+			var valuesArr []elementValue = make([]elementValue, len(floatElementArr))
+			for i := 0; i < len(floatElementArr); i++ {
+				valuesArr[i] = floatElementArr[i]
+			}
+			seriesArr[i].values = valuesArr
 		}
 		if isIntType {
-			seriesArr[i].values = intElementArr
+			var valuesArr []elementValue = make([]elementValue, len(intElementArr))
+			for i := 0; i < len(intElementArr); i++ {
+				valuesArr[i] = intElementArr[i]
+			}
+			seriesArr[i].values = valuesArr
 		}
 		if isBoolType {
-			seriesArr[i].values = boolElementArr
+			var valuesArr []elementValue = make([]elementValue, len(boolElementArr))
+			for i := 0; i < len(boolElementArr); i++ {
+				valuesArr[i] = boolElementArr[i]
+			}
+			seriesArr[i].values = valuesArr
 		}
 		if isStringType {
 			seriesArr[i].values = stringElementArr
@@ -170,7 +182,12 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 	for i := 0; i < len(anyElementArr); i++ {
 		timeElementArr[i] = anyElementArr[i].(stringElement).ToTime()
 	}
-	seriesArr[paserFormat.parse_dates].values = timeElementArr
+
+	var valuesArr []elementValue = make([]elementValue, len(timeElementArr))
+	for i := 0; i < len(timeElementArr); i++ {
+		valuesArr[i] = timeElementArr[i]
+	}
+	seriesArr[paserFormat.parse_dates].values = valuesArr
 
 	resultDataFrame := DataFrame{}
 	resultDataFrame.columns = seriesArr
