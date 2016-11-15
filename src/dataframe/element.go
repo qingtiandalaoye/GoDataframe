@@ -409,11 +409,13 @@ func (s stringElement) ToBool() boolElement {
 	var b bool
 	if *s.s == "false" {
 		b = false
+		return boolElement{&b}
 	}
 	if *s.s == "true" {
 		b = true
+		return boolElement{&b}
 	}
-	return boolElement{&b}
+	return boolElement{nil}
 }
 func (i intElement) ToBool() boolElement {
 	if i.i == nil {
