@@ -25,19 +25,19 @@ func TestCreate_series(t *testing.T) {
 
 func TestCreate_named_series(t *testing.T) {
 	var se Series = NamedStrings("nameABC", []string{"A", "B", "", "1", "2", "true", "false", "123456.01", "78.9", "2016-01-01", "2016-12-31"})
-	fmt.Printf("string of Series is: %s\n", String(se))
+	fmt.Printf("string of Series is: %s\n", se)
 
 	se = NamedInts("name1", []int{123456, 678, 789, 90})
-	fmt.Printf("string of Series is: %s\n", String(se))
+	fmt.Printf("string of Series is: %s\n", se)
 
 	se = NamedFloats("name1", []float64{123456.01, 56.7, 78.9})
-	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+	fmt.Printf("%s  string of Series is: %s\n", se, se)
 
 	se = NamedBools("name1", []bool{true, true, false, true, true, false})
-	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+	fmt.Printf("%s  string of Series is: %s\n", se, se)
 
 	se = NamedTimes("name1", "2006-01-02", []string{"2016-01-01", "2016-12-12", "2016-12-29"})
-	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+	fmt.Printf("%s  string of Series is: %s\n", se, se)
 }
 
 func TestCreate_named_series_value(t *testing.T) {
@@ -74,14 +74,14 @@ func TestCreate_named_series_value(t *testing.T) {
 
 func TestSet_Index_series(t *testing.T) {
 	var se Series = NamedStrings("nameABC", []string{"A", "B", "", "1", "2", "true", "false", "123456.01", "78.9", "2016-01-01", "2016-12-31"})
-	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+	fmt.Printf("%s  string of Series is: %s\n", se, se)
 	for i, v := range Values(se) {
 		fmt.Printf("%d, %s\n", i, v)
 	}
 	val := Values(se)
 	se.setIndex(&val)
 
-	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+	fmt.Printf("%s  string of Series is: %s\n", se, se)
 }
 
 func TestSet_Index_shift(t *testing.T) {
@@ -98,12 +98,12 @@ func TestSet_Index_shift(t *testing.T) {
 
 func TestSet_IndexOf_series(t *testing.T) {
 	var se Series = NamedStrings("nameABC", []string{"A", "B", "", "1", "2", "true", "false", "123456.01", "78.9", "2016-01-01", "2016-12-31"})
-	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+	fmt.Printf("%s  string of Series is: %s\n", se, se)
 
 	val := Values(se)
 	se.setIndex(&val)
 
-	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+	fmt.Printf("%s  string of Series is: %s\n", se, se)
 
 	x, _ := ToString(se.indexOf(0))
 	fmt.Printf("indexOf(0) of Series is: %s\n", x)
@@ -133,16 +133,16 @@ func TestSet_IndexOf_series(t *testing.T) {
 
 func TestSet_order_series(t *testing.T) {
 	var se Series = NamedStrings("nameABC", []string{"A", "B", "C", "DE", "fg", "1", "2", "34", "56", "35", "BB"})
-	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+	fmt.Printf("%s  string of Series is: %s\n", se, se)
 
 	val := Values(se)
 	se.setIndex(&val)
 
-	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
+	fmt.Printf("%s  string of Series is: %s\n", se, se)
 
 	sasc := se.Sort_indexASC()
-	fmt.Printf("%s  string of Series is: %s\n", *sasc, String(*sasc))
+	fmt.Printf("%s  string of Series is: %s\n", *sasc, *sasc)
 	sdesc := se.Sort_indexDESC()
-	fmt.Printf("%s  string of Series is: %s\n", *sdesc, String(*sdesc))
+	fmt.Printf("%s  string of Series is: %s\n", *sdesc, *sdesc)
 
 }

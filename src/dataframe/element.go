@@ -53,18 +53,17 @@ const format_timeElement_style_default = "2006-01-02"
 
 //const format_timeElement_style_default = "2006-01-02 15:04:05"
 
-func createTimeElement(datetimeFormat string, s *string) timeElement {
+func createTimeElement(datetimeFormat string, s *string) (timeElement, error) {
 	if len(datetimeFormat) == 0 {
 		datetimeFormat = format_timeElement_style_default
 	}
 	if t, err := time.Parse(datetimeFormat, *s); err == nil {
-		return timeElement{&t}
+		return timeElement{&t}, nil
 	} else {
 		fmt.Printf("createTimeElement error: %s", err)
 		panic("createTimeElement error: ")
+		return timeElement{nil}, errors.New("Parse by datetimeFormat error.")
 	}
-
-	return timeElement{nil}
 }
 
 //print the type
@@ -337,18 +336,29 @@ func (s stringElement) ToTime() timeElement {
 	if s.s == nil {
 		return timeElement{nil}
 	}
-	return createTimeElement(format_timeElement_style_default, s.s)
+	if tme, err := createTimeElement(format_timeElement_style_default, s.s); err == nil {
+		return tme
+	}
+	return timeElement{nil}
 }
+
 func (t timeElement) ToTime() timeElement {
 	return t.Copy()
 }
 func (i intElement) ToTime() timeElement {
 	timeStr := strconv.Itoa(*i.i)
-	return createTimeElement(format_timeElement_style_default, &timeStr)
+	if tme, err := createTimeElement(format_timeElement_style_default, &timeStr); err == nil {
+		return tme
+	}
+	return timeElement{nil}
 }
+
 func (f floatElement) ToTime() timeElement {
 	timeStr := strconv.FormatFloat(float64(*f.f), 'f', 6, 64)
-	return createTimeElement(format_timeElement_style_default, &timeStr)
+	if tme, err := createTimeElement(format_timeElement_style_default, &timeStr); err == nil {
+		return tme
+	}
+	return timeElement{nil}
 }
 func (b boolElement) ToTime() timeElement {
 	return timeElement{nil}

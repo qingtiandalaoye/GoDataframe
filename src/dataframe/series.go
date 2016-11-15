@@ -180,7 +180,7 @@ func Times(datetimeFormat string, args []string) Series {
 	var valuesArr []elementValue = make([]elementValue, len(args))
 	var RuneCount int = len("1994-01-11 00:00:00 +0000 UTC")
 	for i := 0; i < len(args); i++ {
-		valuesArr[i] = createTimeElement(datetimeFormat, &args[i])
+		valuesArr[i], _ = createTimeElement(datetimeFormat, &args[i])
 	}
 	ret := Series{
 		Name:      "",
@@ -231,7 +231,7 @@ func Values(s Series) []elementValue {
 }
 
 // String implements the Stringer interface for Series
-func String(s Series) string {
+func (s Series) String() string {
 	var ret []string
 	// If name exists print name
 	if s.Name != "" {

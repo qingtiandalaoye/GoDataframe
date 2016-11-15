@@ -23,13 +23,14 @@ type DataFrame struct {
 type DataFrameInterface interface {
 	filterTimeIndexByRange(time.Time, time.Time) DataFrameInterface
 	sort_index() DataFrameInterface
-	tailOf(int) string
-	headOf(int) string
-	tail() string
-	head() string
+	//tailOf(int) string
+	//headOf(int) string
+	//tail() string
+	//head() string
 	shape() []int
 	indexOf(int) map[string]elementValue      //get a row of dataframe, -1 is the last row
 	loc(elementValue) map[string]elementValue //get a row of dataframe, elementValue is the index value
+	column(string) Series                     //get the column by name
 
 	//some thing about  :  df["sma_0"] = df["ma_" + str(shortPeriod)]
 	//df["dvix"] = df["dprice"] / df["dprice"].shift(1) * 100
@@ -65,6 +66,45 @@ func sort_index() DataFrame {
 
 func New(series ...Series) DataFrame {
 	return DataFrame{}
+}
+
+func (df DataFrame) shape() []int {
+	return []int{df.nrows, df.ncols}
+}
+
+func (df DataFrame) loc(eleValue elementValue) map[string]elementValue {
+	m1 := make(map[string]elementValue)
+	//for i, v := range df.Index {
+	//	//elementValue
+	//	if v.EQ(eleValue) {
+	//
+	//	}
+	//}
+	//for _, se := range df.columns {
+	//	if idx <= len(se.values) {
+	//		m1[se.Name] = se.values[idx]
+	//	}
+	//}
+	return m1
+}
+
+func (df DataFrame) indexOf(idx int) map[string]elementValue {
+	m1 := make(map[string]elementValue)
+	for _, se := range df.columns {
+		if idx <= len(se.values) {
+			m1[se.Name] = se.values[idx]
+		}
+	}
+	return m1
+}
+
+func (df DataFrame) column(name string) (Series, error) {
+	for _, se := range df.columns {
+		if strings.EqualFold(se.Name, name) {
+			return se, nil
+		}
+	}
+	return Series{}, errors.New("column(name string) error.")
 }
 
 //like  pandas.read_csv(fileFullPath, index_col=0,parse_dates=[0])
@@ -113,7 +153,8 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 	for i := 0; i < len(records); i++ {
 		//use the first line as column names
 		columnNames[i] = records[i][0]
-		//fmt.Printf("%s \n", records[i])
+		//set Series name
+		seriesArr[i].Name = records[i][0]
 
 		var stringArr = make([]string, len(records[i])-paserFormat.skipfooter-paserFormat.skiprows)
 		stringArrIndex := 0
@@ -186,10 +227,17 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 	}
 	seriesArr[paserFormat.parse_dates].setValues(&valuesArr)
 
+	//set index of all series
+	indexValue := Values(seriesArr[paserFormat.index_col])
+	for i := 0; i < len(seriesArr); i++ {
+		seriesArr[i].setIndex(&indexValue)
+	}
+
 	resultDataFrame := DataFrame{}
 	resultDataFrame.columns = seriesArr
 	resultDataFrame.ColumnNames = columnNames
-	resultDataFrame.Index = Values(seriesArr[paserFormat.index_col])
+	//set index of dataframe
+	resultDataFrame.Index = indexValue
 	resultDataFrame.ncols = len(seriesArr)
 	resultDataFrame.nrows = len(resultDataFrame.Index)
 	//fmt.Printf("%s \t", resultDataFrame)
@@ -198,7 +246,6 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 }
 
 func (df DataFrame) String() string {
-
 	var buf bytes.Buffer
 	buf.WriteString("Name:\t")
 	buf.WriteString(df.Name)
