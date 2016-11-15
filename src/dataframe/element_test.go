@@ -205,3 +205,25 @@ func TestTime_element(test *testing.T) {
 	}
 
 }
+func TestTime_element_eq(test *testing.T) {
+	//could not paser other format
+	aformat_timeElement_style1 := "2006-01-02 15:04:05"
+	str1 := stringElement{&aformat_timeElement_style1}
+	str2 := stringElement{&aformat_timeElement_style1}
+	if !str1.Eq(str2) {
+		test.Errorf("stringElement should same!")
+		test.Fail()
+	}
+
+	if !Eq(str1, str2) {
+		test.Errorf("stringElement should same!")
+		test.Fail()
+	}
+
+	intE := 2006
+	intEle := intElement{&intE}
+	if Eq(intEle, str2) {
+		test.Errorf("stringElement,intElement should not same!")
+		test.Fail()
+	}
+}

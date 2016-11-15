@@ -18,6 +18,7 @@ type DataFrame struct {
 	ncols       int
 	nrows       int
 	Index       []elementValue // an Elements used as index
+	IndexType   string         // The type of the series
 }
 
 type DataFrameInterface interface {
@@ -73,19 +74,12 @@ func (df DataFrame) shape() []int {
 }
 
 func (df DataFrame) loc(eleValue elementValue) map[string]elementValue {
-	m1 := make(map[string]elementValue)
-	//for i, v := range df.Index {
-	//	//elementValue
-	//	if v.EQ(eleValue) {
-	//
-	//	}
-	//}
-	//for _, se := range df.columns {
-	//	if idx <= len(se.values) {
-	//		m1[se.Name] = se.values[idx]
-	//	}
-	//}
-	return m1
+	for i, v := range df.Index {
+		if Eq(v, eleValue) {
+			return df.indexOf(i)
+		}
+	}
+	return nil
 }
 
 func (df DataFrame) indexOf(idx int) map[string]elementValue {
@@ -241,8 +235,11 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 	resultDataFrame := DataFrame{}
 	resultDataFrame.columns = seriesArr
 	resultDataFrame.ColumnNames = columnNames
+
 	//set index of dataframe
 	resultDataFrame.Index = indexValue
+	resultDataFrame.IndexType = seriesArr[paserFormat.index_col].t
+
 	resultDataFrame.ncols = len(seriesArr)
 	resultDataFrame.nrows = len(resultDataFrame.Index)
 	//fmt.Printf("%s \t", resultDataFrame)

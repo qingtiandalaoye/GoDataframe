@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -72,6 +73,42 @@ func checkit(v interface{}) {
 	fmt.Printf("check the type: %s, %b\n", ret, ok)
 	var t = reflect.TypeOf(v)
 	fmt.Printf("check the reflect type: %v\n", t)
+}
+
+func Eq(e elementValue, in elementValue) bool {
+	if in == nil {
+		return false
+	}
+	meType := reflect.TypeOf(e)
+	inType := reflect.TypeOf(in)
+	if !strings.EqualFold(meType.Name(), inType.Name()) {
+		return false
+	}
+	switch e.(type) {
+	case intElement:
+		var ele intElement = e.(intElement)
+		var inEle intElement = in.(intElement)
+		return ele.Eq(inEle)
+	case floatElement:
+		var ele floatElement = e.(floatElement)
+		var inEle floatElement = in.(floatElement)
+		return ele.Eq(inEle)
+	case stringElement:
+		var ele stringElement = e.(stringElement)
+		var inEle stringElement = in.(stringElement)
+		return ele.Eq(inEle)
+	case boolElement:
+		var ele boolElement = e.(boolElement)
+		var inEle boolElement = in.(boolElement)
+		return ele.Eq(inEle)
+	case timeElement:
+		var ele timeElement = e.(timeElement)
+		var inEle timeElement = in.(timeElement)
+		return ele.Eq(inEle)
+	default:
+		return false
+	}
+
 }
 
 func ToString(e elementValue) (stringElement, error) {
