@@ -69,7 +69,7 @@ func (s *Series) loc(val elementValue) elementValue {
 
 func (s *Series) indexOf(idx int) elementValue {
 	if idx < 0 {
-		return s.values[len(s.Index) + idx ]
+		return s.values[len(s.Index)+idx]
 	}
 	if len(s.Index) <= idx {
 		var empty string = ""
@@ -83,7 +83,6 @@ func (s *Series) shift(idx int) *Series {
 	s.values = s.values[1:len(s.values)]
 	return s
 }
-
 
 // Strings is a constructor for a String series
 func Strings(args []string) Series {
@@ -268,45 +267,45 @@ func (s *Series) sort_index(asc bool) *Series {
 		return s
 	}
 	for i := 0; i < len(s.Index); i++ {
-		for j := 0; j < len(s.Index) - 1; j++ {
+		for j := 0; j < len(s.Index)-1; j++ {
 			jGreaterThanJPlus1 := false
 			switch s.t {
 			case Int_type:
 				s1 := s.Index[j].(intElement)
-				s2 := s.Index[j + 1].(intElement)
+				s2 := s.Index[j+1].(intElement)
 				if s1.Greater(s2) {
 					jGreaterThanJPlus1 = true
 				}
 			case Float_type:
-				if s.Index[j].(floatElement).Greater(s.Index[j + 1].(floatElement)) {
+				if s.Index[j].(floatElement).Greater(s.Index[j+1].(floatElement)) {
 					jGreaterThanJPlus1 = true
 				}
 			case String_type:
-				if s.Index[j].(stringElement).Greater(s.Index[j + 1].(stringElement)) {
+				if s.Index[j].(stringElement).Greater(s.Index[j+1].(stringElement)) {
 					jGreaterThanJPlus1 = true
 				}
 			case Bool_type:
-				if s.Index[j].(boolElement).Greater(s.Index[j + 1].(boolElement)) {
+				if s.Index[j].(boolElement).Greater(s.Index[j+1].(boolElement)) {
 					jGreaterThanJPlus1 = true
 				}
 			case Time_type:
-				if s.Index[j].(timeElement).Greater(s.Index[j + 1].(timeElement)) {
+				if s.Index[j].(timeElement).Greater(s.Index[j+1].(timeElement)) {
 					jGreaterThanJPlus1 = true
 				}
 			default:
-			//do nothing
+				//do nothing
 			}
 			//s.Index[j] > s.Index[j + 1]
 			if asc {
 				if jGreaterThanJPlus1 {
-					tmp := s.Index[j + 1]
-					s.Index[j + 1] = s.Index[j]
+					tmp := s.Index[j+1]
+					s.Index[j+1] = s.Index[j]
 					s.Index[j] = tmp
 				}
 			} else {
 				if !jGreaterThanJPlus1 {
-					tmp := s.Index[j + 1]
-					s.Index[j + 1] = s.Index[j]
+					tmp := s.Index[j+1]
+					s.Index[j+1] = s.Index[j]
 					s.Index[j] = tmp
 				}
 			}

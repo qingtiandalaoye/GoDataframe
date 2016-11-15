@@ -4,11 +4,11 @@ package dataframe
 //a little change
 
 import (
-	"fmt"
-	"time"
-	"strconv"
 	"errors"
+	"fmt"
 	"reflect"
+	"strconv"
+	"time"
 )
 
 type stringElement struct {
@@ -32,7 +32,6 @@ type boolElement struct {
 }
 
 type elementInterface interface {
-
 	Eq(elementInterface) bool
 	Less(elementInterface) bool
 	LessEq(elementInterface) bool
@@ -51,6 +50,7 @@ type elementValue interface{}
 
 //use go lang standard mode, this is hard code: src/pkg/time/format.go
 const format_timeElement_style_default = "2006-01-02"
+
 //const format_timeElement_style_default = "2006-01-02 15:04:05"
 
 func createTimeElement(datetimeFormat string, s *string) timeElement {
@@ -59,7 +59,7 @@ func createTimeElement(datetimeFormat string, s *string) timeElement {
 	}
 	if t, err := time.Parse(datetimeFormat, *s); err == nil {
 		return timeElement{&t}
-	}else{
+	} else {
 		fmt.Printf("createTimeElement error: %s", err)
 		panic("createTimeElement error: ")
 	}
@@ -67,13 +67,12 @@ func createTimeElement(datetimeFormat string, s *string) timeElement {
 	return timeElement{nil}
 }
 
-
 //print the type
-func checkit(v interface{}){
-	ret,ok:=v.(int)
-	fmt.Printf("check the type: %s, %b\n",ret,ok)
+func checkit(v interface{}) {
+	ret, ok := v.(int)
+	fmt.Printf("check the type: %s, %b\n", ret, ok)
 	var t = reflect.TypeOf(v)
-	fmt.Printf("check the reflect type: %v\n",t)
+	fmt.Printf("check the reflect type: %v\n", t)
 }
 
 func ToString(e elementValue) (stringElement, error) {
@@ -224,7 +223,6 @@ func (e stringElement) Len() int {
 	return len(*e.s)
 }
 
-
 func (e stringElement) Value() elementValue {
 	if e.IsNA() {
 		return nil
@@ -255,7 +253,6 @@ func (t timeElement) Value() elementValue {
 	}
 	return *t.t
 }
-
 
 func (s stringElement) ToString() stringElement {
 	return s.Copy()
@@ -350,7 +347,7 @@ func (i intElement) ToTime() timeElement {
 	return createTimeElement(format_timeElement_style_default, &timeStr)
 }
 func (f floatElement) ToTime() timeElement {
-	timeStr := strconv.FormatFloat(float64(*f.f),'f', 6, 64)
+	timeStr := strconv.FormatFloat(float64(*f.f), 'f', 6, 64)
 	return createTimeElement(format_timeElement_style_default, &timeStr)
 }
 func (b boolElement) ToTime() timeElement {
@@ -720,7 +717,7 @@ func (t timeElement) Eq(elem elementInterface) bool {
 	time1 := (*t.t).Unix()
 	time2 := (*e.t).Unix()
 
-	return  time1 == time2
+	return time1 == time2
 }
 
 func (s boolElement) Eq(elem elementInterface) bool {
@@ -744,7 +741,7 @@ func (i intElement) String() string {
 	if i.i == nil {
 		return "NA"
 	}
-	return fmt.Sprintf("%d",*i.i)
+	return fmt.Sprintf("%d", *i.i)
 }
 func (f floatElement) String() string {
 	if f.f == nil {
@@ -838,6 +835,7 @@ func (t timeElement) IsNA() bool {
 	}
 	return false
 }
+
 // IsNA returns true if the element is empty and viceversa
 func (b boolElement) IsNA() bool {
 	if b.b == nil {

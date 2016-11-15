@@ -2,8 +2,8 @@ package dataframe
 
 import (
 	"fmt"
-	"testing"
 	"strings"
+	"testing"
 )
 
 func TestCreate_series(t *testing.T) {
@@ -97,7 +97,6 @@ func TestSet_Index_shift(t *testing.T) {
 	}
 }
 
-
 func TestSet_IndexOf_series(t *testing.T) {
 	var se Series = NamedStrings("nameABC", []string{"A", "B", "", "1", "2", "true", "false", "123456.01", "78.9", "2016-01-01", "2016-12-31"})
 	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
@@ -109,7 +108,7 @@ func TestSet_IndexOf_series(t *testing.T) {
 	fmt.Printf("%s  string of Series is: %s\n", se, String(se))
 
 	x, _ := ToString(se.indexOf(0))
-	fmt.Printf("indexOf(0) of Series is: %s\n",x)
+	fmt.Printf("indexOf(0) of Series is: %s\n", x)
 	if !strings.EqualFold(*x.s, "A") {
 		t.Error("not match")
 		t.Fail()
@@ -117,17 +116,16 @@ func TestSet_IndexOf_series(t *testing.T) {
 
 	xy, _ := ToString(se.indexOf(3))
 
-	fmt.Printf("indexOf(3) of Series is: %s\n",xy)
+	fmt.Printf("indexOf(3) of Series is: %s\n", xy)
 	if !strings.EqualFold(*xy.s, "1") {
 		t.Error("not match")
 		t.Fail()
 	}
 
-
 	st := "123456.01"
 	xy, _ = ToString(se.loc(stringElement{&st}))
 
-	fmt.Printf("loc of Series is: %s\n",xy)
+	fmt.Printf("loc of Series is: %s\n", xy)
 	if !strings.EqualFold(*xy.s, "123456.01") {
 		t.Error("not match")
 		t.Fail()
