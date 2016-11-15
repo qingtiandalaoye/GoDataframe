@@ -193,6 +193,7 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 			for i := 0; i < len(floatElementArr); i++ {
 				valuesArr[i] = floatElementArr[i]
 			}
+			seriesArr[i].t = Float_type
 			seriesArr[i].setValues(&valuesArr)
 		}
 		if isIntType {
@@ -200,6 +201,7 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 			for i := 0; i < len(intElementArr); i++ {
 				valuesArr[i] = intElementArr[i]
 			}
+			seriesArr[i].t = Int_type
 			seriesArr[i].setValues(&valuesArr)
 		}
 		if isBoolType {
@@ -207,9 +209,11 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 			for i := 0; i < len(boolElementArr); i++ {
 				valuesArr[i] = boolElementArr[i]
 			}
+			seriesArr[i].t = Bool_type
 			seriesArr[i].setValues(&valuesArr)
 		}
-		if isStringType {
+		if (!isFloatType) && (!isIntType) && (!isBoolType) && isStringType {
+			seriesArr[i].t = String_type
 			seriesArr[i].setValues(&stringElementArr)
 		}
 
@@ -225,6 +229,7 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 	for i := 0; i < len(timeElementArr); i++ {
 		valuesArr[i] = timeElementArr[i]
 	}
+	seriesArr[paserFormat.parse_dates].t = Time_type
 	seriesArr[paserFormat.parse_dates].setValues(&valuesArr)
 
 	//set index of all series
