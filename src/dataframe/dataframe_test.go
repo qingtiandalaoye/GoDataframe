@@ -165,3 +165,34 @@ func Test_loc(test *testing.T) {
 
 	}
 }
+
+func Test_ReferenceByAddress(test *testing.T) {
+
+	//fmt.Printf("running %s\n", "Read_csv")
+	csvFormat := CsvPaserFormatter{}
+
+	csvFormat.csvFilePath = stock_file_add
+	csvFormat.index_col = 0
+	csvFormat.parse_dates = 0
+	//dont need to paser date column
+	csvFormat.date_paser_format = "2006-01-02"
+	csvFormat.skiprows = 1
+
+	//fmt.Printf("a file: %s\n", *csvFormat.csvFilePath)
+
+	df, err := Read_csv(csvFormat)
+	if err != nil {
+		test.Errorf("read csv file error %v\n", err)
+		test.FailNow()
+	}
+	fmt.Printf("for check the rederence by address manuelly :\n%s", df)
+	fmt.Printf("the address of df Index:%p\n", df.Index)
+	seriesList := df.columns
+
+	for i := 0; i < len(seriesList); i++ {
+		s := seriesList[i]
+		fmt.Printf("the address of Series Index:%p\n", s.Index)
+		fmt.Printf("the address of Series values:%p\n", s.values)
+	}
+
+}
