@@ -5,11 +5,12 @@ import (
 	"testing"
 )
 
+const stock_file_add string = "C:\\GOPATH\\GoBackTest\\test\\data\\000006.csv"
+
 func TestRead_csv(t *testing.T) {
 	//fmt.Printf("running %s\n", "Read_csv")
 	csvFormat := CsvPaserFormatter{}
 
-	stock_file_add := "\\zwdat\\cn\\day\\000006.csv"
 	csvFormat.csvFilePath = stock_file_add
 	csvFormat.index_col = 0
 	csvFormat.parse_dates = 0
@@ -32,7 +33,6 @@ func Test_Column(test *testing.T) {
 	//fmt.Printf("running %s\n", "Read_csv")
 	csvFormat := CsvPaserFormatter{}
 
-	stock_file_add := "\\zwdat\\cn\\day\\000006.csv"
 	csvFormat.csvFilePath = stock_file_add
 	csvFormat.index_col = 0
 	csvFormat.parse_dates = 0
@@ -87,7 +87,6 @@ func Test_loc(test *testing.T) {
 	//fmt.Printf("running %s\n", "Read_csv")
 	csvFormat := CsvPaserFormatter{}
 
-	stock_file_add := "\\zwdat\\cn\\day\\000006.csv"
 	csvFormat.csvFilePath = stock_file_add
 	csvFormat.index_col = 0
 	csvFormat.parse_dates = 0

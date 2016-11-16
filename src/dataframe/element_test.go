@@ -54,29 +54,22 @@ func TestCreate_element(t *testing.T) {
 	fmt.Printf("%v\n", tim.t)
 	fmt.Printf("%v\n", *tim.t)
 
-	strOfTime := fmt.Sprintf("%v\n", *tim.t)
-	//println(strOfTime)
-	//println(tim.String())
-	//println(string(tim.String()))
-
-	//http://www.tuicool.com/articles/32Mn2q
-	//go语言中，判断两个字符串是否相等，用
-	//strings.EqualFold(str1, str2)
-	if strings.EqualFold(tim.String(), strOfTime) {
+	strOfTime := fmt.Sprintf("%v", *tim.t)
+	if !strings.EqualFold(tim.String(), strOfTime) {
 		t.Errorf("time is not same")
 		t.Fail()
 	}
 }
 
-func TestToString_element(t *testing.T) {
+func TestToString_element(test *testing.T) {
 
 	aString := "abc"
 	str := stringElement{&aString}
 
 	fmt.Printf("%s\n", str)
 	if str.String() != "abc" {
-		t.Errorf("string is not same")
-		t.Fail()
+		test.Errorf("string is not same")
+		test.Fail()
 	}
 
 	fmt.Printf("length of string:%d\n", str.Len())
@@ -86,8 +79,8 @@ func TestToString_element(t *testing.T) {
 	inte.i = &integ
 	fmt.Printf("%s\n", inte)
 	if inte.String() != "789" {
-		t.Errorf("int is not same")
-		t.Fail()
+		test.Errorf("int is not same")
+		test.Fail()
 	}
 	//convert to stringElement
 	vStr, _ := ToString(inte)
@@ -102,26 +95,34 @@ func TestToString_element(t *testing.T) {
 
 	//%.2f  is the default format
 	if flo.String() != "89.10" {
-		t.Errorf("float is not same")
-		t.Fail()
+		test.Errorf("float is not same")
+		test.Fail()
 	}
 	//convert to stringElement
 	vStr, _ = ToString(flo)
 	fmt.Printf("type of flo:%v\n", vStr)
 	fmt.Printf("length of flo:%d\n", vStr.Len())
+	if !strings.EqualFold(*vStr.s, "89.10") {
+		test.Errorf("float is not same")
+		test.Fail()
+	}
 
 	bol := boolElement{}
 	bole := true
 	bol.b = &bole
 	fmt.Printf("%s\n", bol)
 	if bol.String() != "true" {
-		t.Errorf("bool is not same")
-		t.Fail()
+		test.Errorf("bool is not same")
+		test.Fail()
 	}
 	//convert to stringElement
 	vStr, _ = ToString(bol)
 	fmt.Printf("type of bool:%v\n", vStr)
 	fmt.Printf("length of bool:%d\n", vStr.Len())
+	if !strings.EqualFold(*vStr.s, "true") {
+		test.Errorf("float is not same")
+		test.Fail()
+	}
 
 	tim := timeElement{}
 	tim1 := time.Now()
@@ -130,22 +131,30 @@ func TestToString_element(t *testing.T) {
 	fmt.Printf("%v\n", tim.t)
 	fmt.Printf("%v\n", *tim.t)
 
-	strOfTime := fmt.Sprintf("%v\n", *tim.t)
-	//println(strOfTime)
-	//println(tim.String())
-	//println(string(tim.String()))
+	strOfTime := fmt.Sprintf("%v", *tim.t)
 
-	//http://www.tuicool.com/articles/32Mn2q
-	//go语言中，判断两个字符串是否相等，用
-	//strings.EqualFold(str1, str2)
-	if strings.EqualFold(tim.String(), strOfTime) {
-		t.Errorf("time is not same")
-		t.Fail()
+	if !strings.EqualFold(tim.String(), strOfTime) {
+		test.Errorf("time is not same")
+		test.Fail()
 	}
+
 	//convert to stringElement
 	vStr, _ = ToString(tim)
-	fmt.Printf("type of time:%v\n", vStr)
+
 	fmt.Printf("length of time:%d\n", vStr.Len())
+	fmt.Printf("length of time:%d\n", len(strOfTime))
+	if vStr.Len() != len(strOfTime) {
+		test.Errorf("time is not same")
+		test.Fail()
+
+	}
+	fmt.Printf("type of time:[%v]\n", strOfTime)
+	fmt.Printf("type of time:[%v]\n", tim.String())
+
+	if !strings.EqualFold(tim.String(), strOfTime) {
+		test.Errorf("time is not same")
+		test.Fail()
+	}
 }
 
 func TestTime_element(test *testing.T) {
