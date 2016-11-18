@@ -24,10 +24,10 @@ type DataFrame struct {
 type DataFrameInterface interface {
 	filterTimeIndexByRange(time.Time, time.Time) DataFrameInterface
 	sort_index() DataFrameInterface
-	//tailOf(int) string
-	//headOf(int) string
-	//tail() string
-	//head() string
+	tailOf(int) string
+	headOf(int) string
+	tail() string
+	head() string
 	shape() []int
 	indexOf(int) map[string]elementValue      //get a row of dataframe, -1 is the last row
 	loc(elementValue) map[string]elementValue //get a row of dataframe, elementValue is the index value
@@ -265,6 +265,70 @@ func (df DataFrame) String() string {
 	buf.WriteString("\n")
 	var seriesColumns []Series = df.columns
 	for i := 0; i < df.nrows; i++ {
+		for _, se := range seriesColumns {
+			strEle, _ := ToString(se.values[i])
+			buf.WriteString(AddLeftPadding(*strEle.s, se.RuneCount+2)) //hard code 2
+		}
+		buf.WriteString("\n")
+	}
+
+	return buf.String()
+}
+
+func (df DataFrame) head() string {
+	return df.headOf(20)
+}
+
+func (df DataFrame) headOf(num int) string {
+	var buf bytes.Buffer
+	buf.WriteString("Name:\t")
+	buf.WriteString(df.Name)
+	buf.WriteString("\n")
+	buf.WriteString("row * column : \t")
+	buf.WriteString(strconv.Itoa(df.nrows))
+	buf.WriteString(" * ")
+	buf.WriteString(strconv.Itoa(df.ncols))
+	buf.WriteString("\n")
+
+	for _, v := range df.ColumnNames {
+		buf.WriteString(v)
+		buf.WriteString("\t")
+	}
+	buf.WriteString("\n")
+	var seriesColumns []Series = df.columns
+	for i := 0; i < df.nrows && i < num; i++ {
+		for _, se := range seriesColumns {
+			strEle, _ := ToString(se.values[i])
+			buf.WriteString(AddLeftPadding(*strEle.s, se.RuneCount+2)) //hard code 2
+		}
+		buf.WriteString("\n")
+	}
+
+	return buf.String()
+}
+
+func (df DataFrame) tail() string {
+	return df.tailOf(20)
+}
+
+func (df DataFrame) tailOf(num int) string {
+	var buf bytes.Buffer
+	buf.WriteString("Name:\t")
+	buf.WriteString(df.Name)
+	buf.WriteString("\n")
+	buf.WriteString("row * column : \t")
+	buf.WriteString(strconv.Itoa(df.nrows))
+	buf.WriteString(" * ")
+	buf.WriteString(strconv.Itoa(df.ncols))
+	buf.WriteString("\n")
+
+	for _, v := range df.ColumnNames {
+		buf.WriteString(v)
+		buf.WriteString("\t")
+	}
+	buf.WriteString("\n")
+	var seriesColumns []Series = df.columns
+	for i := (df.nrows - num); i < df.nrows; i++ {
 		for _, se := range seriesColumns {
 			strEle, _ := ToString(se.values[i])
 			buf.WriteString(AddLeftPadding(*strEle.s, se.RuneCount+2)) //hard code 2
