@@ -46,6 +46,21 @@ type SeriesInterface interface {
 	shift(int) SeriesInterface
 	indexOf(int) elementValue      //get a row of Series, -1 is the last row
 	loc(elementValue) elementValue //get a row of Series, elementValue is the index value
+
+	//add(Series) Series
+	//subtract(Series) Series
+	//multiply(Series) Series
+	//divide(Series) Series
+	//
+	//add(int) Series
+	//subtract(int) Series
+	//multiply(int) Series
+	//divide(int) Series
+	//
+	//add(float64) Series
+	//subtract(float64) Series
+	//multiply(float64) Series
+	//divide(float64) Series
 }
 
 func (s *Series) setValues(values *[]elementValue) {
