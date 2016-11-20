@@ -53,12 +53,12 @@ func init() {
 //error_bad_lines=True, warn_bad_lines = True)
 
 type CsvPaserFormatter struct {
-	csvFilePath       string //point to the file path string
-	index_col         int    //indecate which is the index
-	parse_dates       int    //indecator which is a date format
-	date_paser_format string //indecator the date paser format
-	skiprows          int
-	skipfooter        int
+	CsvFilePath       string //point to the file path string
+	Index_col         int    //indecate which is the index
+	Parse_dates       int    //indecator which is a date format
+	Date_paser_format string //indecator the date paser format
+	Skiprows          int
+	Skipfooter        int
 }
 
 func sort_index() DataFrame {
@@ -105,7 +105,7 @@ func (df DataFrame) column(name string) (Series, error) {
 //csvFilePath string, index_col int, parse_dates []int
 func Read_csv(paserFormat CsvPaserFormatter) (DataFrame, error) {
 
-	fileContent, _ := ioutil.ReadFile(paserFormat.csvFilePath)
+	fileContent, _ := ioutil.ReadFile(paserFormat.CsvFilePath)
 	r := csv.NewReader(strings.NewReader(string(fileContent)))
 
 	var records [][]string
@@ -130,11 +130,11 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 		return DataFrame{}, errors.New("Empty records")
 	}
 	//paserFormat.skiprows
-	if paserFormat.skiprows <= 0 {
-		paserFormat.skiprows = 0
+	if paserFormat.Skiprows <= 0 {
+		paserFormat.Skiprows = 0
 	}
-	if paserFormat.skipfooter <= 0 {
-		paserFormat.skipfooter = 0
+	if paserFormat.Skipfooter <= 0 {
+		paserFormat.Skipfooter = 0
 	}
 
 	records = TransposeRecords(records)
@@ -150,10 +150,10 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 		//set Series name
 		seriesArr[i].Name = records[i][0]
 
-		var stringArr = make([]string, len(records[i])-paserFormat.skipfooter-paserFormat.skiprows)
+		var stringArr = make([]string, len(records[i])-paserFormat.Skipfooter -paserFormat.Skiprows)
 		stringArrIndex := 0
 
-		for j := paserFormat.skiprows; j < len(records[i])-paserFormat.skipfooter; j++ {
+		for j := paserFormat.Skiprows; j < len(records[i])-paserFormat.Skipfooter; j++ {
 			//all use stringElement
 			stringArr[stringArrIndex] = records[i][j]
 			stringArrIndex += 1
@@ -213,7 +213,7 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 
 	}
 	//make special column to timeElement
-	anyElementArr := Values(seriesArr[paserFormat.parse_dates])
+	anyElementArr := Values(seriesArr[paserFormat.Parse_dates])
 	var timeElementArr = make([]timeElement, len(anyElementArr))
 	for i := 0; i < len(anyElementArr); i++ {
 		timeElementArr[i] = anyElementArr[i].(stringElement).ToTime()
@@ -223,11 +223,11 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 	for i := 0; i < len(timeElementArr); i++ {
 		valuesArr[i] = timeElementArr[i]
 	}
-	seriesArr[paserFormat.parse_dates].t = Time_type
-	seriesArr[paserFormat.parse_dates].setValues(&valuesArr)
+	seriesArr[paserFormat.Parse_dates].t = Time_type
+	seriesArr[paserFormat.Parse_dates].setValues(&valuesArr)
 
 	//set index of all series
-	indexValue := Values(seriesArr[paserFormat.index_col])
+	indexValue := Values(seriesArr[paserFormat.Index_col])
 	for i := 0; i < len(seriesArr); i++ {
 		seriesArr[i].setIndex(&indexValue)
 	}
@@ -238,7 +238,7 @@ func PaserCSV(records [][]string, paserFormat CsvPaserFormatter) (DataFrame, err
 
 	//set index of dataframe
 	resultDataFrame.Index = indexValue
-	resultDataFrame.IndexType = seriesArr[paserFormat.index_col].t
+	resultDataFrame.IndexType = seriesArr[paserFormat.Index_col].t
 
 	resultDataFrame.ncols = len(seriesArr)
 	resultDataFrame.nrows = len(resultDataFrame.Index)
