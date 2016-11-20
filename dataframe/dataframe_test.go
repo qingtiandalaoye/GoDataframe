@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-const stock_file_add string = "C:\\GOPATH\\GoBackTest\\test\\data\\000006.csv"
+const stock_file_add string = "C:\\GOPATH\\src\\GoBackTest\\test\\data\\000006.csv"
 
 func TestRead_csv(t *testing.T) {
 	//fmt.Printf("running %s\n", "Read_csv")
